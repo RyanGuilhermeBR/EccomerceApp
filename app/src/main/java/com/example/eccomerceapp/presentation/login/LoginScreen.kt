@@ -69,7 +69,7 @@ fun LoginContent(
     var passwordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = KabumBlueDark // Fundo Azul Escuro Oficial
+        containerColor = KabumBlueDark
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -79,17 +79,21 @@ fun LoginContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Título do App em Branco
-            Text(
-                text = "EcommerceApp",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            // Título "Login" à Esquerda e em Laranja
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = KabumOrange
+                )
+            }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Box Central Branco
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,68 +119,89 @@ fun LoginContent(
                         text = "Bem-vindo",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = KabumOrange // Laranja
+                        color = KabumOrange
                     )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "E-mail",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.email,
+                            onValueChange = onEmailChange,
+                            placeholder = { Text("Insira seu e-mail") },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+                            isError = uiState.emailError != null,
+                            supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = uiState.email,
-                        onValueChange = onEmailChange,
-                        label = { Text("Email") },
-                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
-                        isError = uiState.emailError != null,
-                        supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Senha",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.password,
+                            onValueChange = onPasswordChange,
+                            placeholder = { Text("Insira sua senha") },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
+                            trailingIcon = {
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
+                                }
+                            },
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            isError = uiState.passwordError != null,
+                            supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.clearFocus()
+                                onLoginClick()
+                            }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = uiState.password,
-                        onValueChange = onPasswordChange,
-                        label = { Text("Senha") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
-                        trailingIcon = {
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
-                            }
-                        },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = uiState.passwordError != null,
-                        supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            focusManager.clearFocus()
-                            onLoginClick()
-                        }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Esqueceu sua senha? Laranja e Centralizado
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        TextButton(onClick = { /* TODO */ }) {
+                        TextButton(onClick = { /* TODO: Esqueceu senha */ }) {
                             Text(
                                 text = "Esqueceu sua senha?",
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.SemiBold,
-                                color = KabumOrange
+                                color = Color.Gray
                             )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botão Entrar Laranja com Sombra
+                    // Botão Entrar com Sombreado
                     Button(
                         onClick = onLoginClick,
                         enabled = !uiState.isLoading,
                         shape = RoundedCornerShape(8.dp),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dp,
+                            pressedElevation = 12.dp,
+                            disabledElevation = 0.dp
+                        ),
                         colors = ButtonDefaults.buttonColors(containerColor = KabumOrange),
                         modifier = Modifier.fillMaxWidth().height(56.dp)
                     ) {
@@ -189,7 +214,6 @@ fun LoginContent(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Cadastre-se Laranja
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically

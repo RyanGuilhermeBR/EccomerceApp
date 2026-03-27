@@ -76,7 +76,7 @@ fun RegisterContent(
     var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = KabumBlueDark, // Fundo Azul Escuro
+        containerColor = KabumBlueDark,
         topBar = {
             TopAppBar(
                 title = { },
@@ -103,7 +103,6 @@ fun RegisterContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Título Branco
             Text(
                 text = "Cadastre-se",
                 style = MaterialTheme.typography.headlineMedium,
@@ -113,7 +112,6 @@ fun RegisterContent(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Box Central Branco
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,78 +133,118 @@ fun RegisterContent(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = uiState.name,
-                        onValueChange = onNameChange,
-                        label = { Text("Nome completo") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Nome") },
-                        isError = uiState.nameError != null,
-                        supportingText = { if (uiState.nameError != null) Text(uiState.nameError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    // Nome completo
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Nome completo",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.name,
+                            onValueChange = onNameChange,
+                            placeholder = { Text("Insira seu nome completo") },
+                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Nome") },
+                            isError = uiState.nameError != null,
+                            supportingText = { if (uiState.nameError != null) Text(uiState.nameError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = uiState.email,
-                        onValueChange = onEmailChange,
-                        label = { Text("Email") },
-                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
-                        isError = uiState.emailError != null,
-                        supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    // E-mail
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "E-mail",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.email,
+                            onValueChange = onEmailChange,
+                            placeholder = { Text("Insira seu e-mail") },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+                            isError = uiState.emailError != null,
+                            supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = uiState.password,
-                        onValueChange = onPasswordChange,
-                        label = { Text("Senha") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
-                        trailingIcon = {
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
-                            }
-                        },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = uiState.passwordError != null,
-                        supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    // Senha
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Senha",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.password,
+                            onValueChange = onPasswordChange,
+                            placeholder = { Text("Insira sua senha") },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
+                            trailingIcon = {
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
+                                }
+                            },
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            isError = uiState.passwordError != null,
+                            supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = uiState.confirmPassword,
-                        onValueChange = onConfirmPasswordChange,
-                        label = { Text("Confirmar senha") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirmar senha") },
-                        trailingIcon = {
-                            IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                                Text(if (confirmPasswordVisible) "👁️" else "👁️‍🗨️")
-                            }
-                        },
-                        visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = uiState.confirmPasswordError != null,
-                        supportingText = { if (uiState.confirmPasswordError != null) Text(uiState.confirmPasswordError!!) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            focusManager.clearFocus()
-                            onRegisterClick()
-                        }),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    // Confirmar senha
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Confirmar senha",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        OutlinedTextField(
+                            value = uiState.confirmPassword,
+                            onValueChange = onConfirmPasswordChange,
+                            placeholder = { Text("Confirme sua senha") },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirmar senha") },
+                            trailingIcon = {
+                                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                                    Text(if (confirmPasswordVisible) "👁️" else "👁️‍🗨️")
+                                }
+                            },
+                            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            isError = uiState.confirmPasswordError != null,
+                            supportingText = { if (uiState.confirmPasswordError != null) Text(uiState.confirmPasswordError!!) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.clearFocus()
+                                onRegisterClick()
+                            }),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(32.dp))
 
