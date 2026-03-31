@@ -1,5 +1,6 @@
 package com.example.eccomerceapp.presentation.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -26,8 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eccomerceapp.presentation.components.FeedbackBanner
 import com.example.eccomerceapp.presentation.components.FeedbackType
+import com.example.eccomerceapp.ui.theme.BackgroundGray
 import com.example.eccomerceapp.ui.theme.EccomerceAppTheme
-import com.example.eccomerceapp.ui.theme.KabumBlueDark
+import com.example.eccomerceapp.ui.theme.KabumBlue
 import com.example.eccomerceapp.ui.theme.KabumOrange
 
 @Composable
@@ -67,46 +68,60 @@ fun LoginContent(
 ) {
     val focusManager = LocalFocusManager.current
     var passwordVisible by remember { mutableStateOf(false) }
+    var rememberMe by remember { mutableStateOf(false) }
 
-    Scaffold(
-        containerColor = KabumBlueDark
-    ) { paddingValues ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundGray) // Fundo Cinza Neutro
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Título "Login" à Esquerda e em Laranja
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 32.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = "Login",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = KabumOrange
-                )
-            }
-
+            // Card Branco Principal
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
-                shape = RoundedCornerShape(24.dp),
-                shadowElevation = 8.dp
+                shape = RoundedCornerShape(28.dp),
+                shadowElevation = 4.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp),
+                    modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color(0xFF1F2021)
+                    )
+
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Não tem uma conta? ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                        TextButton(
+                            onClick = onNavigateToRegister,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Cadastre-se",
+                                color = KabumOrange,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
                     FeedbackBanner(
                         message = uiState.errorMessage ?: "",
                         type = FeedbackType.ERROR,
@@ -115,98 +130,74 @@ fun LoginContent(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = "Bem-vindo",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = KabumOrange
+                    // Campo Email
+                    LoginField(
+                        label = "E-mail",
+                        value = uiState.email,
+                        placeholder = "Insira seu e-mail",
+                        onValueChange = onEmailChange,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
                     )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "E-mail",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.email,
-                            onValueChange = onEmailChange,
-                            placeholder = { Text("Insira seu e-mail") },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
-                            isError = uiState.emailError != null,
-                            supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Senha",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.password,
-                            onValueChange = onPasswordChange,
-                            placeholder = { Text("Insira sua senha") },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
-                            trailingIcon = {
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
-                                }
-                            },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            isError = uiState.passwordError != null,
-                            supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                focusManager.clearFocus()
-                                onLoginClick()
-                            }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    // Campo Senha
+                    LoginField(
+                        label = "Senha",
+                        value = uiState.password,
+                        placeholder = "********",
+                        onValueChange = onPasswordChange,
+                        isPassword = true,
+                        passwordVisible = passwordVisible,
+                        onVisibilityToggle = { passwordVisible = !passwordVisible },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { onLoginClick() })
+                    )
 
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        TextButton(onClick = { /* TODO: Esqueceu senha */ }) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Lembrar-me e Esqueci a Senha
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = rememberMe,
+                                onCheckedChange = { rememberMe = it },
+                                colors = CheckboxDefaults.colors(checkedColor = KabumOrange)
+                            )
+                            Text(
+                                text = "Lembrar-me",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
+                        TextButton(onClick = { /* TODO */ }) {
                             Text(
                                 text = "Esqueceu sua senha?",
                                 style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.Gray
+                                color = KabumOrange,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                    // Botão Entrar com Sombreado
+                    // Botão Login
                     Button(
                         onClick = onLoginClick,
-                        enabled = !uiState.isLoading,
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp,
-                            pressedElevation = 12.dp,
-                            disabledElevation = 0.dp
-                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = KabumOrange),
-                        modifier = Modifier.fillMaxWidth().height(56.dp)
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                         } else {
                             Text("Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
@@ -214,18 +205,103 @@ fun LoginContent(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // Divisor OU
                     Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "Não tem uma conta?", style = MaterialTheme.typography.bodyMedium)
-                        TextButton(onClick = onNavigateToRegister) {
-                            Text("Cadastre-se", fontWeight = FontWeight.Bold, color = KabumOrange)
-                        }
+                        HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
+                        Text(
+                            text = "Ou",
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            color = Color.Gray,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Botões Sociais
+                    SocialButton(text = "Continuar com Google", icon = "G")
+                    Spacer(modifier = Modifier.height(12.dp))
+                    SocialButton(text = "Continuar com Facebook", icon = "f")
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+fun LoginField(
+    label: String,
+    value: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    isPassword: Boolean = false,
+    passwordVisible: Boolean = false,
+    onVisibilityToggle: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder, color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            trailingIcon = if (isPassword) {
+                {
+                    IconButton(onClick = onVisibilityToggle ?: {}) {
+                        Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
+                    }
+                }
+            } else null,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color(0xFFE0E0E0),
+                focusedBorderColor = KabumOrange
+            )
+        )
+    }
+}
+
+@Composable
+fun SocialButton(text: String, icon: String) {
+    OutlinedButton(
+        onClick = { /* TODO */ },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(12.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0))
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = icon,
+                fontWeight = FontWeight.ExtraBold,
+                color = KabumBlue,
+                modifier = Modifier.padding(end = 12.dp)
+            )
+            Text(
+                text = text,
+                color = Color(0xFF1F2021),
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

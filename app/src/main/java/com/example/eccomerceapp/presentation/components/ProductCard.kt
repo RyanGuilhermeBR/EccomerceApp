@@ -3,6 +3,7 @@ package com.example.eccomerceapp.presentation.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eccomerceapp.data.model.Product
 import com.example.eccomerceapp.ui.theme.EccomerceAppTheme
+import com.example.eccomerceapp.ui.theme.KabumOrange
 
 /**
  * Card de produto reutilizável inspirado no design da Kabum
@@ -30,9 +32,8 @@ fun ProductCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(320.dp),
+            .height(340.dp), // Aumentado um pouco para caber tudo confortavelmente
         onClick = onClick,
-        // Forçando o fundo do card para Branco
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -41,19 +42,16 @@ fun ProductCard(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Imagem do Produto
             ProductImage(
                 imageUrl = product.imageUrl,
                 discountPercentage = product.discountPercentage
             )
 
-            // Informações do Produto
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
             ) {
-                // Nome do Produto
                 Text(
                     text = product.name,
                     style = MaterialTheme.typography.bodyMedium,
@@ -65,7 +63,6 @@ fun ProductCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Preço Original (se houver desconto)
                 if (product.hasDiscount()) {
                     Text(
                         text = "R$ ${String.format("%.2f", product.originalPrice)}",
@@ -77,18 +74,17 @@ fun ProductCard(
                     Spacer(modifier = Modifier.height(2.dp))
                 }
 
-                // Preço Atual em LARANJA
+                // VALOR DO PRODUTO EM LARANJA
                 Text(
                     text = "R$ ${String.format("%.2f", product.price)}",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary, // Mapeado para KabumOrange
+                    color = KabumOrange, 
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Parcelamento
                 Text(
                     text = "em até ${product.installments}x de R$ ${String.format("%.2f", product.getInstallmentValue())}",
                     style = MaterialTheme.typography.bodySmall,
@@ -96,19 +92,25 @@ fun ProductCard(
                     fontSize = 11.sp
                 )
 
-                // Rating
+                // ESTRELA EM LARANJA
                 if (product.rating > 0) {
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "⭐", fontSize = 10.sp)
-                        Spacer(modifier = Modifier.width(2.dp))
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = KabumOrange,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = product.rating.toString(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 11.sp
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -127,7 +129,6 @@ private fun ProductImage(
             .fillMaxWidth()
             .height(160.dp)
     ) {
-        // Fundo da imagem levemente cinza para destacar o produto
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFFF8F9FA) 
@@ -145,13 +146,12 @@ private fun ProductImage(
             }
         }
 
-        // Badge de Desconto Laranja
         if (discountPercentage != null && discountPercentage > 0) {
             Surface(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp),
-                color = MaterialTheme.colorScheme.secondary,
+                color = KabumOrange,
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
@@ -162,32 +162,6 @@ private fun ProductImage(
                     fontSize = 12.sp
                 )
             }
-        }
-    }
-}
-
-// Previews atualizadas para mostrar o novo estilo
-@Preview(name = "Produto Kabum Style", showBackground = true, backgroundColor = 0xFFF2F3F4)
-@Composable
-private fun ProductCardKabumPreview() {
-    EccomerceAppTheme {
-        Box(modifier = Modifier.padding(16.dp)) {
-            ProductCard(
-                product = Product(
-                    id = "1",
-                    name = "Placa de Vídeo RTX 4060 Ti MSI NVIDIA GeForce, 8GB GDDR6",
-                    description = "Alta performance gamer",
-                    price = 2399.90,
-                    originalPrice = 2999.00,
-                    discountPercentage = 20,
-                    installments = 10,
-                    imageUrl = "",
-                    category = "Hardware",
-                    stock = 10,
-                    rating = 4.9f
-                ),
-                onClick = { }
-            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.eccomerceapp.presentation.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,14 +9,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eccomerceapp.presentation.components.FeedbackBanner
 import com.example.eccomerceapp.presentation.components.FeedbackType
+import com.example.eccomerceapp.ui.theme.BackgroundGray
 import com.example.eccomerceapp.ui.theme.EccomerceAppTheme
-import com.example.eccomerceapp.ui.theme.KabumBlueDark
 import com.example.eccomerceapp.ui.theme.KabumOrange
 
 @Composable
@@ -73,219 +75,203 @@ fun RegisterContent(
 ) {
     val focusManager = LocalFocusManager.current
     var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
-    Scaffold(
-        containerColor = KabumBlueDark,
-        topBar = {
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateToLogin) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Voltar",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = KabumBlueDark
-                )
-            )
-        }
-    ) { paddingValues ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundGray)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Cadastre-se",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                IconButton(onClick = onNavigateToLogin) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = Color.Black)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
-                shape = RoundedCornerShape(24.dp),
-                shadowElevation = 8.dp
+                shape = RoundedCornerShape(28.dp),
+                shadowElevation = 4.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.Start
                 ) {
+                    Text(
+                        text = "Cadastro",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2021)
+                    )
+
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Já tem uma conta? ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                        TextButton(
+                            onClick = onNavigateToLogin,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Entrar",
+                                color = KabumOrange,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
                     FeedbackBanner(
                         message = uiState.errorMessage ?: "",
                         type = FeedbackType.ERROR,
                         isVisible = uiState.errorMessage != null
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                    // Nome completo
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Nome completo",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.name,
-                            onValueChange = onNameChange,
-                            placeholder = { Text("Insira seu nome completo") },
-                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Nome") },
-                            isError = uiState.nameError != null,
-                            supportingText = { if (uiState.nameError != null) Text(uiState.nameError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    RegisterField(
+                        label = "Nome completo",
+                        value = uiState.name,
+                        placeholder = "Ex: Lois Becket",
+                        onValueChange = onNameChange,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // E-mail
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "E-mail",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.email,
-                            onValueChange = onEmailChange,
-                            placeholder = { Text("Insira seu e-mail") },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
-                            isError = uiState.emailError != null,
-                            supportingText = { if (uiState.emailError != null) Text(uiState.emailError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    RegisterField(
+                        label = "E-mail",
+                        value = uiState.email,
+                        placeholder = "email@exemplo.com",
+                        onValueChange = onEmailChange,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Senha
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Senha",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.password,
-                            onValueChange = onPasswordChange,
-                            placeholder = { Text("Insira sua senha") },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Senha") },
-                            trailingIcon = {
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Text(if (passwordVisible) "👁️" else "👁️‍🗨️")
-                                }
-                            },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            isError = uiState.passwordError != null,
-                            supportingText = { if (uiState.passwordError != null) Text(uiState.passwordError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    RegisterField(
+                        label = "Data de nascimento",
+                        value = "", 
+                        placeholder = "DD/MM/AAAA",
+                        onValueChange = { },
+                        trailingIcon = { Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.Gray) }
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Confirmar senha
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Confirmar senha",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = uiState.confirmPassword,
-                            onValueChange = onConfirmPasswordChange,
-                            placeholder = { Text("Confirme sua senha") },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirmar senha") },
-                            trailingIcon = {
-                                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                                    Text(if (confirmPasswordVisible) "👁️" else "👁️‍🗨️")
-                                }
-                            },
-                            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            isError = uiState.confirmPasswordError != null,
-                            supportingText = { if (uiState.confirmPasswordError != null) Text(uiState.confirmPasswordError!!) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                focusManager.clearFocus()
-                                onRegisterClick()
-                            }),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    RegisterField(
+                        label = "Número de telefone",
+                        value = "",
+                        placeholder = "(00) 00000-0000",
+                        onValueChange = { },
+                        leadingIcon = {
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 12.dp, end = 8.dp)) {
+                                Text("🇧🇷", fontSize = 20.sp)
+                                Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.size(12.dp).padding(start = 4.dp), tint = Color.Gray)
+                            }
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    RegisterField(
+                        label = "Senha",
+                        value = uiState.password,
+                        placeholder = "********",
+                        onValueChange = onPasswordChange,
+                        isPassword = true,
+                        passwordVisible = passwordVisible,
+                        onVisibilityToggle = { passwordVisible = !passwordVisible },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { onRegisterClick() })
+                    )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
                         onClick = onRegisterClick,
-                        enabled = !uiState.isLoading,
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = KabumOrange,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.fillMaxWidth().height(56.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = KabumOrange),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                         } else {
                             Text("Cadastrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Já tem uma conta?", style = MaterialTheme.typography.bodyMedium)
-                        TextButton(onClick = onNavigateToLogin) {
-                            Text(
-                                text = "Entrar",
-                                fontWeight = FontWeight.Bold,
-                                color = KabumOrange
-                            )
-                        }
-                    }
                 }
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
+    }
+}
+
+@Composable
+fun RegisterField(
+    label: String,
+    value: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    isPassword: Boolean = false,
+    passwordVisible: Boolean = false,
+    onVisibilityToggle: (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder, color = Color.LightGray) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            leadingIcon = leadingIcon,
+            trailingIcon = if (isPassword) {
+                {
+                    IconButton(onClick = onVisibilityToggle ?: {}) {
+                        Text(if (passwordVisible) "👁️" else "👁️‍🗨️", fontSize = 16.sp)
+                    }
+                }
+            } else trailingIcon,
+            visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color(0xFFF0F0F0),
+                focusedBorderColor = KabumOrange,
+                unfocusedContainerColor = Color(0xFFF9F9F9),
+                focusedContainerColor = Color.White
+            )
+        )
     }
 }
 
